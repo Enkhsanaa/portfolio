@@ -1,0 +1,14 @@
+.bl-sm-1 {
+	border-left: 1px solid #333;
+}
+.br-sm-1 {
+	border-right: 1px solid #333;
+}
+@media screen and (max-width: 767px) {
+	.bl-sm-1 {
+		border-left: none;
+	}
+	.br-sm-1 {
+		border-right: none;
+	}
+}

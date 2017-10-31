@@ -1,0 +1,31 @@
+<section class="container d-flex align-items-center" style="height: 60vh">
+	<div class="row w-100">
+		<div class="col-md br-sm-1">
+			<h2 class="my-3">Text to speech</h2>
+			<form>
+				<mat-form-field class="w-100">
+					<input matInput placeholder="Token">
+				</mat-form-field>
+				<mat-form-field class="w-100">
+					<textarea matInput matTextareaAutosize maxRows="6" placeholder="Text"></textarea>
+				</mat-form-field>
+			</form>
+			<div id="tts_response"></div>
+		</div>
+		<div class="col-md d-flex flex-column bl-sm-1">
+			<h2 class="my-3">Speech to text</h2>
+			<div class="row h-100 d-flex align-items-center text-center">
+				<div class="col-md-2 col-sm-6">
+					<button mat-fab color="warn" class="m-1"><mat-icon>mic</mat-icon></button>
+				</div>
+				<div class="col-md-2 col-sm-6">
+					<button mat-fab color="warn" class="m-1"><mat-icon>stop</mat-icon></button>
+				</div>
+				<div class="col-md d-flex align-items-center justify-content-center">
+					<button mat-button class="m-1">Recognize</button>
+				</div>
+			</div>
+			<div id="stt_response"></div>
+		</div>
+	</div>
+</section>

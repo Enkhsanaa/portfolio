@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import 'node_modules/bootstrap/scss/bootstrap';
 
 @import './variables';
@@ -25,19 +25,17 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	transition: background 0.5s linear;
+	border-radius: 50%;
 	> svg {
 		fill: #02303a;
 		fill-rule: evenodd;
 		transition: fill 0.5s linear;
 	}
 	&:hover {
+		background-color: #02303a;
 		> svg {
 			fill: #fff;
 		}
 	}
-}
-.mat-button,
-.mat-icon-button,
-.mat-raised-button {
-	color: #fff !important;
 }

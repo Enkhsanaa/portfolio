@@ -14,9 +14,18 @@ import {
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import 'rxjs/add/operator/map';
+import { MnSpeechApiComponent } from './mn-speech-api/mn-speech-api.component';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+
+const appRoutes: Routes = [
+	{ path: 'mn-speech-api', component: MnSpeechApiComponent },
+	{ path: '', component: HomeComponent },
+	{ path: '**', component: AppComponent }
+];
 
 @NgModule({
-	declarations: [AppComponent],
+	declarations: [AppComponent, MnSpeechApiComponent, HomeComponent],
 	imports: [
 		BrowserModule,
 		BrowserAnimationsModule,
@@ -28,7 +37,8 @@ import 'rxjs/add/operator/map';
 		MatSnackBarModule,
 		MatInputModule,
 		MatSidenavModule,
-		HttpModule
+		HttpModule,
+		RouterModule.forRoot(appRoutes, { enableTracing: true })
 	],
 	providers: [],
 	bootstrap: [AppComponent]
