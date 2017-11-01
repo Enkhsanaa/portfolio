@@ -2,16 +2,13 @@
 	<div class="row w-100">
 		<div class="col-md br-sm-1">
 			<h2 class="my-3">Яриа болгох</h2>
-			<form>
-				<mat-form-field class="w-100">
-					<input matInput placeholder="Токен">
-				</mat-form-field>
-				<mat-form-field class="w-100">
-					<textarea matInput matTextareaAutosize maxRows="6" placeholder="Уншигдах текст"></textarea>
-				</mat-form-field>
-				<button mat-raised-button class="m-1">Хөрвүүл</button>
-			</form>
-			<div id="tts_response"></div>
+			<mat-form-field class="w-100">
+				<input matInput placeholder="Токен" #token>
+			</mat-form-field>
+			<mat-form-field class="w-100">
+				<textarea matInput matTextareaAutosize maxRows="6" placeholder="Уншигдах текст" #text></textarea>
+			</mat-form-field>
+			<button mat-raised-button class="m-1" type="button" (click)="sendToTTS(token.value, text.value)">Хөрвүүл</button>
 		</div>
 		<div class="col-md d-flex flex-column bl-sm-1">
 			<h2 class="my-3">Текст болгох</h2>
@@ -24,7 +21,7 @@
 				</div>
 			</div>
 			<div class="d-flex align-items-center justify-content-md-start justify-content-center">
-				<button mat-raised-button class="m-1">Илгээх</button>
+				<button mat-raised-button class="m-1" (click)="sendToSTT()">Илгээх</button>
 			</div>
 			<div id="stt_response"></div>
 		</div>

@@ -38,7 +38,7 @@ const appRoutes: Routes = [
 		MatInputModule,
 		MatSidenavModule,
 		HttpModule,
-		RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true })
+		RouterModule.forRoot(appRoutes, { useHash: true })
 	],
 	providers: [],
 	bootstrap: [AppComponent]
