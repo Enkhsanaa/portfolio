@@ -19,8 +19,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 
 const appRoutes: Routes = [
-	{ path: 'mn-speech-api', component: MnSpeechApiComponent },
-	{ path: '', component: HomeComponent },
+	{ path: 'mn-speech-api', component: MnSpeechApiComponent, data: { state: 'mn-speech-api' } },
+	{ path: '', component: HomeComponent, data: { state: 'home' } },
 	{ path: '**', component: AppComponent }
 ];
 
@@ -38,7 +38,7 @@ const appRoutes: Routes = [
 		MatInputModule,
 		MatSidenavModule,
 		HttpModule,
-		RouterModule.forRoot(appRoutes, { enableTracing: true })
+		RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true })
 	],
 	providers: [],
 	bootstrap: [AppComponent]

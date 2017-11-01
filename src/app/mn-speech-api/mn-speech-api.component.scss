@@ -7,8 +7,11 @@
 @media screen and (max-width: 767px) {
 	.bl-sm-1 {
 		border-left: none;
+		border-top: 1px solid #333;
 	}
 	.br-sm-1 {
 		border-right: none;
+		border-bottom: 1px solid #333;
+		padding-bottom: 1em;
 	}
 }
