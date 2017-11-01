@@ -9,6 +9,9 @@
 				<textarea matInput matTextareaAutosize maxRows="6" placeholder="Уншигдах текст" #text></textarea>
 			</mat-form-field>
 			<button mat-raised-button class="m-1" type="button" (click)="sendToTTS(token.value, text.value)">Хөрвүүл</button>
+			<div class="alert alert-success">
+				{{message}}
+			</div>
 		</div>
 		<div class="col-md d-flex flex-column bl-sm-1">
 			<h2 class="my-3">Текст болгох</h2>

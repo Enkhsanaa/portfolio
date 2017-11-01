@@ -7,17 +7,16 @@ import { Http, Headers } from '@angular/http';
 	styleUrls: ['./mn-speech-api.component.scss']
 })
 export class MnSpeechApiComponent implements OnInit {
+	message: String;
 	constructor(private http: Http) {}
 
 	ngOnInit() {}
 	sendToTTS(token, text) {
 		var request = {
-			url: 'http://172.104.34.197:3000/tts/',
+			url: 'tts/',
 			token: token,
-			data: text
+			data: { txt: text }
 		};
-		console.log(request);
-
 		var headers = new Headers();
 		headers.append('Authorization', 'JWT ' + request.token);
 		headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -25,10 +24,11 @@ export class MnSpeechApiComponent implements OnInit {
 		reader.onload = function(e) {
 			window.open(decodeURIComponent(reader.result), '_self', '', false);
 		};
-		console.log(headers);
 		this.http.post(request.url, request.data, { headers: headers }).subscribe(res => {
 			console.log(res);
-			reader.readAsDataURL(new Blob([res], { type: 'audio/wav' }));
+			if (res.status == 200) {
+				reader.readAsDataURL(new Blob([res], { type: 'audio/wav' }));
+			} else this.message = res.statusText;
 		});
 	}
 	sendToSTT() {
