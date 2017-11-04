@@ -1,61 +1,112 @@
-<section class="container">
+<section class="container p-3 mn-speech-api" >
 	<div class="alert alert-{{this.flashMessage.type}} text-center" *ngIf="this.flashMessage.content != ''">
 		{{this.flashMessage.content}}
 	</div>
-	<div class="d-md-flex justify-content-center">
-		<div class="w-100 mx-1">
-			<h2 class="my-3">Токен авах</h2>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Нэр" #fname>
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Овог" #lname>
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Утас" #phone>
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Цахим хаяг" #email>
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Хэрэглэгчийн нэр" #username>
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Нууц үг" #password>
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<textarea matInput matTextareaAutosize maxRows="6" placeholder="Таны хийдэг ажлын тухай" #aboutProject></textarea>
-			</mat-form-field>
-			<button mat-raised-button type="button" class="m-1" (click)="getToken(fname, lname, phone, email, username, password, aboutProject)">Токен авах</button>
-		</div>
-		<br>
-		<div class="w-100 mx-1">
-			<h2 class="my-3">Яриа болгох</h2>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Токен" #token value="{{this.authToken}}">
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<input matInput placeholder="Хоолой" #voice value="tsevelmaa">
-			</mat-form-field>
-			<mat-form-field class="w-100">
-				<textarea matInput matTextareaAutosize maxRows="6" placeholder="Уншигдах текст" #text></textarea>
-			</mat-form-field>
-			<button mat-raised-button class="m-1" type="button" (click)="sendToTTS(token, voice, text)">Хөрвүүл</button>
-			<div class="alert alert-success text-center" *ngIf="this.responseWAV != ''">
-				{{this.responseWAV}}
-			</div>
-		</div>
-		<br>
-		<div class="w-100 mx-1">
-			<h2 class="my-3">Текст болгох</h2>
-			<div class="d-flex align-items-center text-center">
-				<button mat-fab color="warn" class="m-1"><mat-icon>mic</mat-icon></button>
-				<button mat-fab color="warn" class="m-1"><mat-icon>stop</mat-icon></button>
-			</div>
-			<div class="d-flex align-items-center justify-content-md-start justify-content-center">
-				<button mat-raised-button type="button" class="m-1" (click)="sendToSTT()">Илгээх</button>
-			</div>
-			<div id="stt_response"></div>
-		</div>
-	</div>
+	<mat-card class="mx-auto">
+		<mat-tab-group  color="warn" (selectedIndexChange)="tabChanged($event)" [selectedIndex]="this.speechApiStep" [dynamicHeight]="true">
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<h6 [ngClass]="{'active':this.speechApiStep === 0}"><span><mat-icon class="align-text-top">grade</mat-icon></span> Токен авах</h6>
+				</ng-template>
+				<div class="p-3 api-step">
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Нэр" #fname>
+						</mat-form-field>
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Овог" #lname>
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<textarea matInput matTextareaAutosize maxRows="6" placeholder="Таны хийдэг ажлын тухай" #aboutProject></textarea>
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Утас" #phone>
+						</mat-form-field>
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Цахим хаяг" #email>
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Хэрэглэгчийн нэр" #username>
+						</mat-form-field>
+						<mat-form-field class="col" color="warn">
+							<input matInput type="password" placeholder="Нууц үг" #password>
+						</mat-form-field>
+					</div>
+					<button mat-raised-button type="button" (click)="getToken(fname, lname, phone, email, username, password, aboutProject)">Токен авах</button>
+				</div>
+			</mat-tab>
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<h6 [ngClass]="{'active':this.speechApiStep === 1}"><span><mat-icon class="align-text-top">help_outline</mat-icon></span> Токен мартсан</h6>
+				</ng-template>
+				<div class="p-3 api-step">
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Хэрэглэгчийн нэр" #username>
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput type="password" placeholder="Нууц үг" #password>
+						</mat-form-field>
+					</div>
+					<button mat-raised-button type="button" (click)="getToken(fname, lname, phone, email, username, password, aboutProject)">Токен сэргээх</button>
+				</div>
+			</mat-tab>
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<h6 [ngClass]="{'active':this.speechApiStep === 2}"><span><mat-icon class="align-text-top">audiotrack</mat-icon></span> Яриа болгох</h6>
+				</ng-template>
+				<div class="p-3 api-step">
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Токен" #token value="{{this.authToken}}">
+						</mat-form-field>
+					</div>
+					<div class="row">
+
+						<mat-form-field class="col" color="warn">
+							<mat-select #voice placeholder="Хоолой">
+								<mat-option *ngFor="let voice of this.voices" [value]="voice.value">
+									{{ voice.viewValue }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<textarea matInput matTextareaAutosize maxRows="6" placeholder="Уншигдах текст" #text></textarea>
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<button mat-raised-button class="col ml-3" type="button" (click)="sendToTTS(token, voice, text)" style="transition: width 0.5s linear;">Хөрвүүл</button>
+						<a class="text-white col" href="{{ 'https://enkhsanaa.me/tts/' + this.responseWAV}}" target="_blank" *ngIf="this.responseWAV != ''" (click)="this.responseWAV = ''">
+							<button mat-raised-button class="w-100" type="button" color="warn"><mat-icon>file_download</mat-icon> Татах</button>
+						</a>
+					</div>
+				</div>
+			</mat-tab>
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<h6 [ngClass]="{'active':this.speechApiStep === 3}"><span><mat-icon class="align-text-top">keyboard_voice</mat-icon></span> Текст болгох </h6>
+				</ng-template>
+				<div class="p-3 api-step">
+					<div class="d-flex align-items-center text-center">
+						<button mat-fab color="warn" class="m-1"><mat-icon>fiber_manual_record</mat-icon></button>
+						<button mat-fab color="warn" class="m-1"><mat-icon>stop</mat-icon></button>
+					</div>
+					<div class="d-flex align-items-center justify-content-md-start justify-content-center">
+						<button mat-raised-button type="button" class="m-1" (click)="sendToSTT()">Илгээх</button>
+					</div>
+					<div id="stt_response"></div>
+				</div>
+			</mat-tab>
+		</mat-tab-group>
+	</mat-card>
 </section>

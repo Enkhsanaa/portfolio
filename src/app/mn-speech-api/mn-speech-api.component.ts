@@ -7,9 +7,12 @@ import 'rxjs/Rx';
 	styleUrls: ['./mn-speech-api.component.scss']
 })
 export class MnSpeechApiComponent implements OnInit {
-	flashMessage: { content: String, type: String};
+	flashMessage: { content: String, type: String };
+	voices: Array<{ viewValue: String, value: String }> = [];
 	responseWAV: String = '';
 	authToken: String = '';
+	speechApiStep: Number = 0;
+
 	constructor(private http: Http) {}
 
 	ngOnInit() {
@@ -17,6 +20,9 @@ export class MnSpeechApiComponent implements OnInit {
 			content: '',
 			type: ''
 		};
+		this.voices.push({ viewValue: 'Цэвэлмаа', value: 'tsevelmaa' });
+		this.voices.push({ viewValue: 'Оюунаа', value: 'oyunaa' });
+		this.voices.push({ viewValue: 'Алтанбагана', value: 'altanbagana' });
 		this.loadToken();
 	}
 	sendToTTS(token, voice, text) {
@@ -26,7 +32,7 @@ export class MnSpeechApiComponent implements OnInit {
 			data: { txt: text.value, voice: voice.value}
 		};
 		let headers = new Headers();
-		headers.append('Authorization', 'JWT ' + request.token);
+		headers.append('Authorization', request.token);
 		headers.append('Content-Type', 'application/json');
 		let reader = new FileReader();
 		reader.onload = function(e) {
@@ -70,15 +76,20 @@ export class MnSpeechApiComponent implements OnInit {
 				}
 				this.flashMessage.content = 'Бүртгэл амжилттай! Таны токен ' + data.token;
 				this.flashMessage.type = 'success';
+				this.speechApiStep = 2;
 				this.storeUserData(data.token);
 			});
 	}
 	loadToken() {
 		const token = localStorage.getItem('mnSpeechAPIToken') || '';
 		this.authToken = token;
+		if (token != '') this.speechApiStep = 2;
 	}
 	storeUserData(token) {
 		localStorage.setItem('mnSpeechAPIToken', token);
 		this.authToken = token;
+	}
+	tabChanged = (idx) => {
+		if (idx != this.speechApiStep) this.speechApiStep = Number(idx);
 	}
 }

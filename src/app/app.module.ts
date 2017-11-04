@@ -4,12 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
 	MatButtonModule,
 	MatCardModule,
-	MatMenuModule,
-	MatToolbarModule,
+	MatTabsModule,
 	MatIconModule,
+	MatSelectModule,
 	MatSnackBarModule,
-	MatInputModule,
-	MatSidenavModule
+	MatInputModule
 } from '@angular/material';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
@@ -31,12 +30,11 @@ const appRoutes: Routes = [
 		BrowserAnimationsModule,
 		MatButtonModule,
 		MatCardModule,
-		MatMenuModule,
-		MatToolbarModule,
+		MatTabsModule,
 		MatIconModule,
+		MatSelectModule,
 		MatSnackBarModule,
 		MatInputModule,
-		MatSidenavModule,
 		HttpModule,
 		RouterModule.forRoot(appRoutes, { useHash: true })
 	],
