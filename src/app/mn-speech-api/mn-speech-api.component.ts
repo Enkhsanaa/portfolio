@@ -48,6 +48,32 @@ export class MnSpeechApiComponent implements OnInit {
 		});
 	}
 	sendToSTT() {}
+	recoverToken(username, password) {
+		let data = {
+			username: username.value,
+			password: password.value
+		};
+
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+		this.http
+			.post('https://enkhsanaa.me/user/forgotToken', data, { headers: headers })
+			.map((data: any) => data.json())
+			.subscribe((data: any) => {
+				if (!data.success) {
+					this.flashMessage.content = data.message;
+					this.flashMessage.type = 'danger';
+					setTimeout(() => {
+						this.flashMessage.content = '';
+					}, 2000);
+					return;
+				}
+				this.flashMessage.content = 'Амжилттай! Таны токен ' + data.token;
+				this.flashMessage.type = 'success';
+				this.speechApiStep = 2;
+				this.storeUserData(data.token);
+			});
+	}
 	getToken(fname, lname, phone, email, username, password, aboutProject) {
 		let data = {
 			fname: fname.value,
@@ -65,7 +91,6 @@ export class MnSpeechApiComponent implements OnInit {
 			.post('https://enkhsanaa.me/user', data, { headers: headers })
 			.map((data: any) => data.json())
 			.subscribe((data: any) => {
-				console.log(data);
 				if (!data.success) {
 					this.flashMessage.content = data.message;
 					this.flashMessage.type = 'danger';

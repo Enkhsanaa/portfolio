@@ -48,15 +48,15 @@
 				<div class="p-3 api-step">
 					<div class="row">
 						<mat-form-field class="col" color="warn">
-							<input matInput placeholder="Хэрэглэгчийн нэр" #username>
+							<input matInput placeholder="Хэрэглэгчийн нэр" #fusername>
 						</mat-form-field>
 					</div>
 					<div class="row">
 						<mat-form-field class="col" color="warn">
-							<input matInput type="password" placeholder="Нууц үг" #password>
+							<input matInput type="password" placeholder="Нууц үг" #fpassword>
 						</mat-form-field>
 					</div>
-					<button mat-raised-button type="button" (click)="getToken(fname, lname, phone, email, username, password, aboutProject)">Токен сэргээх</button>
+					<button mat-raised-button type="button" (click)="recoverToken(fusername, fpassword)">Токен сэргээх</button>
 				</div>
 			</mat-tab>
 			<mat-tab>
