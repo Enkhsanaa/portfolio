@@ -67,7 +67,7 @@
 				<div class="p-3 api-step" [ngClass]="{'loading':this.showLoadingBar}">
 					<div class="row">
 						<mat-form-field class="col" color="warn">
-							<input matInput placeholder="Токен" #token value="{{this.authToken}}">
+							<input matInput placeholder="Токен" #tokenTTS value="{{this.authToken}}">
 						</mat-form-field>
 					</div>
 					<div class="row">
@@ -86,7 +86,7 @@
 						</mat-form-field>
 					</div>
 					<div class="row mt-3">
-						<button mat-raised-button class="col ml-3" type="button" (click)="sendToTTS(token, voice, text)" style="transition: width 0.5s linear;">Хөрвүүл</button>
+						<button mat-raised-button class="col ml-3" type="button" (click)="sendToTTS(tokenTTS,voice,text)" style="transition: width 0.5s linear;">Хөрвүүл</button>
 						<a class="text-white col" href="{{ 'https://enkhsanaa.me/tts/' + this.responseWAV}}" target="_blank" *ngIf="this.responseWAV != ''" (click)="this.responseWAV = ''">
 							<button mat-raised-button class="w-100" type="button" color="warn"><mat-icon>file_download</mat-icon> Татах</button>
 						</a>
@@ -98,14 +98,24 @@
 					<h6 [ngClass]="{'active':this.speechApiStep === 3}"><span><mat-icon class="align-text-top">keyboard_voice</mat-icon></span> Текст болгох </h6>
 				</ng-template>
 				<div class="p-3 api-step" [ngClass]="{'loading':this.showLoadingBar}">
-					<div class="d-flex align-items-center text-center">
-						<button mat-fab color="warn" class="m-1"><mat-icon>fiber_manual_record</mat-icon></button>
-						<button mat-fab color="warn" class="m-1"><mat-icon>stop</mat-icon></button>
+					<div class="row">
+						<mat-form-field class="col" color="warn">
+							<input matInput placeholder="Токен" #tokenSTT value="{{this.authToken}}">
+						</mat-form-field>
+					</div>
+					<div class="row">
+						<audio #microphone controls class="col"></audio>
+					</div>
+					<div class="row">
+						<div class="m-1 col">
+							<button mat-fab color="warn" (click)="startRecording()" *ngIf="!this.isRecording"><mat-icon>fiber_manual_record</mat-icon></button>
+							<button mat-fab color="primary" (click)="stopRecording()" *ngIf="this.isRecording"><mat-icon>stop</mat-icon></button>
+						</div>
 					</div>
 					<div class="d-flex align-items-center justify-content-md-start justify-content-center">
-						<button mat-raised-button type="button" class="m-1" (click)="sendToSTT()">Илгээх</button>
+						<button mat-raised-button type="button" class="m-1" (click)="sendToSTT(tokenSTT)">Илгээх</button>
 					</div>
-					<div id="stt_response"></div>
+					<div id="stt_response">{{this.responseText}}</div>
 				</div>
 			</mat-tab>
 		</mat-tab-group>
