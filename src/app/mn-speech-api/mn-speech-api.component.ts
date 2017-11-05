@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import {MatSnackBar} from '@angular/material';
 import 'rxjs/Rx';
 @Component({
 	selector: 'app-mn-speech-api',
@@ -12,8 +13,9 @@ export class MnSpeechApiComponent implements OnInit {
 	responseWAV: String = '';
 	authToken: String = '';
 	speechApiStep: Number = 0;
+	showLoadingBar: Boolean = false;
 
-	constructor(private http: Http) {}
+	constructor(private http: Http, public snackBar: MatSnackBar) {}
 
 	ngOnInit() {
 		this.flashMessage = {
@@ -26,6 +28,7 @@ export class MnSpeechApiComponent implements OnInit {
 		this.loadToken();
 	}
 	sendToTTS(token, voice, text) {
+		this.showLoadingBar = true;
 		let request = {
 			url: 'https://enkhsanaa.me/tts/',
 			token: token.value,
@@ -40,15 +43,14 @@ export class MnSpeechApiComponent implements OnInit {
 		};
 		this.http.post(request.url, request.data, { headers: headers }).map((data: any) => data.json())
 			.subscribe((data: any) => {
-			if (!data.success) {
-				this.responseWAV = 'Алдаа!';
-				return;
-			}
-			else this.responseWAV = data.fileName;
+			this.showLoadingBar = false;
+			this.showSnackbar(data.success, (data.success ? "Таныг татаж авмагц хөрвүүлсэн файл сэрвэр дээрээс устах болно." : data.message));
+			if (data.success) this.responseWAV = data.fileName;
 		});
 	}
 	sendToSTT() {}
 	recoverToken(username, password) {
+		this.showLoadingBar = true;
 		let data = {
 			username: username.value,
 			password: password.value
@@ -60,21 +62,15 @@ export class MnSpeechApiComponent implements OnInit {
 			.post('https://enkhsanaa.me/user/forgotToken', data, { headers: headers })
 			.map((data: any) => data.json())
 			.subscribe((data: any) => {
-				if (!data.success) {
-					this.flashMessage.content = data.message;
-					this.flashMessage.type = 'danger';
-					setTimeout(() => {
-						this.flashMessage.content = '';
-					}, 2000);
-					return;
-				}
-				this.flashMessage.content = 'Амжилттай! Таны токен ' + data.token;
-				this.flashMessage.type = 'success';
-				this.speechApiStep = 2;
+				this.showLoadingBar = false;
+				this.showLoadingBar = false;
+				this.showSnackbar(data.success, (data.success ? data.token : data.message));
+				if (data.success) this.speechApiStep = 2;
 				this.storeUserData(data.token);
 			});
 	}
 	getToken(fname, lname, phone, email, username, password, aboutProject) {
+		this.showLoadingBar = true;
 		let data = {
 			fname: fname.value,
 			lname: lname.value,
@@ -91,17 +87,9 @@ export class MnSpeechApiComponent implements OnInit {
 			.post('https://enkhsanaa.me/user', data, { headers: headers })
 			.map((data: any) => data.json())
 			.subscribe((data: any) => {
-				if (!data.success) {
-					this.flashMessage.content = data.message;
-					this.flashMessage.type = 'danger';
-					setTimeout(() => {
-						this.flashMessage.content = '';
-					}, 2000);
-					return;
-				}
-				this.flashMessage.content = 'Бүртгэл амжилттай! Таны токен ' + data.token;
-				this.flashMessage.type = 'success';
-				this.speechApiStep = 2;
+				this.showLoadingBar = false;
+				this.showSnackbar(data.success, (data.success ? data.token : data.message));
+				if (data.success) this.speechApiStep = 2;
 				this.storeUserData(data.token);
 			});
 	}
@@ -116,5 +104,12 @@ export class MnSpeechApiComponent implements OnInit {
 	}
 	tabChanged = (idx) => {
 		if (idx != this.speechApiStep) this.speechApiStep = Number(idx);
+	}
+	showSnackbar(success: boolean, message: String) {
+		this.snackBar.open((success ? 'Амжилттай! ' : 'Алдаа! ') + message, null, {
+			duration: 20000,
+			verticalPosition: 'top',
+			extraClasses: ['mt-3', 'alert', 'alert-' + (success ? 'success' : 'danger'), 'text-center']
+		});
 	}
 }

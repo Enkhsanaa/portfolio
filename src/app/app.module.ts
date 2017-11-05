@@ -8,6 +8,7 @@ import {
 	MatIconModule,
 	MatSelectModule,
 	MatSnackBarModule,
+	MatProgressBarModule,
 	MatInputModule
 } from '@angular/material';
 import { HttpModule } from '@angular/http';
@@ -34,6 +35,7 @@ const appRoutes: Routes = [
 		MatIconModule,
 		MatSelectModule,
 		MatSnackBarModule,
+		MatProgressBarModule,
 		MatInputModule,
 		HttpModule,
 		RouterModule.forRoot(appRoutes, { useHash: true })
