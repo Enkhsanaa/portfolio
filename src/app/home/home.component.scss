@@ -1,0 +1,84 @@
+section.homepage {
+    height: calc(100vh - 57px);
+    width: 100vw;
+    z-index: -1;
+    background-color: #000;
+    background: #000 url(/assets/images/landing6.jpg) no-repeat 50% 0;
+    background-size: cover;
+    overflow: hidden;
+    padding-left: 50px;
+    padding-top: 300px;
+    .name {
+        color: #efefef;
+        font-size: 4em;
+        p {
+            line-height: 1em;
+            &:last-child {
+                font-size: 1.4em;
+            }
+        }
+    }
+    .occupation {
+        font-size: 2em;
+        color: #aaa;
+        span {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    }
+    .constitutions {
+        font-size: 0.8em;
+        span {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    }
+    .contact-info {
+        color: #bbb;
+        margin-top: 50px;
+    }
+    .github-link {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        a {
+            height: 34px;
+            width: 34px;
+            padding: 7px;
+            transition: background 0.5s linear;
+            border-radius: 50%;
+            svg {
+                fill: #efefef;
+                fill-rule: evenodd;
+                transition: fill 0.5s linear;
+            }
+            &:hover {
+                background-color: #efefef;
+                svg {
+                    fill: #02303a;
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 767px) {
+        padding-top: 120px;
+        .name {
+            font-size: 2em;
+            p {
+                &:last-child {
+                    font-size: 1em;
+                }
+            }
+        }
+        .occupation {
+            font-size: 0.7em;
+        }
+        .constitutions {
+            display: none;
+        }
+        .contact-info {
+            font-size: 0.7em;
+        }
+    }
+
+}

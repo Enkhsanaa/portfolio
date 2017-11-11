@@ -17,15 +17,17 @@ import 'rxjs/add/operator/map';
 import { MnSpeechApiComponent } from './mn-speech-api/mn-speech-api.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { SchedlyComponent } from './schedly/schedly.component';
 
 const appRoutes: Routes = [
+	{ path: '', redirectTo: '/home', pathMatch: 'full' },
 	{ path: 'mn-speech-api', component: MnSpeechApiComponent, data: { state: 'mn-speech-api' } },
-	{ path: '', component: HomeComponent, data: { state: 'home' } },
-	{ path: '**', component: AppComponent }
+	{ path: 'schedly', component: SchedlyComponent, data: { state: 'schedly' } },
+	{ path: 'home', component: HomeComponent, data: { state: 'home' } }
 ];
 
 @NgModule({
-	declarations: [AppComponent, MnSpeechApiComponent, HomeComponent],
+	declarations: [AppComponent, MnSpeechApiComponent, HomeComponent, SchedlyComponent],
 	imports: [
 		BrowserModule,
 		BrowserAnimationsModule,

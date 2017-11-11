@@ -182,7 +182,7 @@ export class MnSpeechApiComponent implements OnInit {
 	loadToken() {
 		const token = localStorage.getItem('mnSpeechAPIToken') || '';
 		this.authToken = token;
-		if (token != '') this.speechApiStep = 3;
+		if (token != '') this.speechApiStep = 2;
 	}
 	storeUserData(token) {
 		localStorage.setItem('mnSpeechAPIToken', token);
