@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import { MatSnackBar } from '@angular/material';
 import {Buffer} from 'buffer';
@@ -12,6 +12,7 @@ declare const MediaRecorder: any;
 	styleUrls: ['./mn-speech-api.component.scss']
 })
 export class MnSpeechApiComponent implements OnInit {
+	SERVER_URL: String = 'https://enkhsanaa.me/';
 	flashMessage: { content: String; type: String };
 	voices: Array<{ viewValue: String; value: String }> = [];
 	responseWAV: String = '';
@@ -24,21 +25,9 @@ export class MnSpeechApiComponent implements OnInit {
 	public isRecording: boolean = false;
 	private chunks: any = [];
 	private mediaRecorder: any;
+	private audioStream: any;
 
-	constructor(private http: Http, public snackBar: MatSnackBar) {
-		const onSuccess = stream => {
-			this.mediaRecorder = new MediaRecorder(stream);
-			this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data);
-		};
-
-		navigator.getUserMedia =
-			navigator.getUserMedia ||
-			navigator.webkitGetUserMedia ||
-			navigator.mozGetUserMedia ||
-			navigator.msGetUserMedia;
-
-		navigator.getUserMedia({ audio: true }, onSuccess, e => console.log(e));
-	}
+	constructor(private http: Http, public snackBar: MatSnackBar, private ref: ChangeDetectorRef) {}
 
 	ngOnInit() {
 		this.flashMessage = {
@@ -53,7 +42,7 @@ export class MnSpeechApiComponent implements OnInit {
 	sendToTTS(token, voice, text) {
 		this.showLoadingBar = true;
 		let request = {
-			url: 'https://enkhsanaa.me/tts/',
+			url: this.SERVER_URL + 'tts/',
 			token: token.value,
 			data: { txt: text.value, voice: voice.value }
 		};
@@ -79,42 +68,61 @@ export class MnSpeechApiComponent implements OnInit {
 			});
 	}
 	startRecording() {
-		this.isRecording = true;
-		this.mediaRecorder.start();
+		const onSuccess = stream => {
+			this.audioStream = stream;
+			this.mediaRecorder = new MediaRecorder(stream);
+			this.mediaRecorder.ondataavailable = e => {
+				this.chunks.push(e.data)
+				const audio = this.microphone.nativeElement;
+				const blob = new Blob(this.chunks, { type: 'audio/wav' });
+				audio.src = window.URL.createObjectURL(blob);
+				audio.load();
+				this.audioStream.getTracks()[0].stop();
+			};
+			this.mediaRecorder.onstart = e => {
+				this.isRecording = true;
+				this.chunks.length = 0;
+				this.ref.detectChanges();
+			};
+			this.mediaRecorder.start();
+		}
+
+		navigator.getUserMedia =
+			navigator.getUserMedia ||
+			navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia ||
+			navigator.msGetUserMedia;
+
+		navigator.getUserMedia({ audio: true }, onSuccess, e => console.log(e));
 	}
 	stopRecording() {
 		this.isRecording = false;
+		this.ref.detectChanges();
 		this.mediaRecorder.stop();
 	}
 	sendToSTT(token) {
-		const audio = this.microphone.nativeElement;
 		const blob = new Blob(this.chunks, { type: 'audio/wav' });
-		// this.chunks.length = 0;
-		audio.src = window.URL.createObjectURL(blob);
 
-		var reader = new FileReader();
-		var onLoadEnd = (function(e) {
-			reader.removeEventListener('loadend', onLoadEnd, false);
-			if (e.error) console.log(e.error);
-			else this.sendWAV(token, Buffer.from(reader.result));
-		}).bind(this);
+		// var reader = new FileReader();
+		// var onLoadEnd = (function(e) {
+		// 	reader.removeEventListener('loadend', onLoadEnd, false);
+		// 	if (e.error) console.log(e.error);
+		// 	else this.sendWAV(token, Buffer.from(reader.result));
+		// }).bind(this);
 
-		reader.addEventListener('loadend', onLoadEnd, false);
-		reader.readAsArrayBuffer(blob);
+		// reader.addEventListener('loadend', onLoadEnd, false);
+		// reader.readAsArrayBuffer(blob);
 
-		audio.load();
+		const formData = new FormData();
+		formData.append('file', blob, "name.wav");
 
-		
-	}
-	sendWAV(token, data) {
 		let request = {
-			url: 'https://enkhsanaa.me/stt/',
+			url: this.SERVER_URL + 'stt/',
 			token: token.value,
-			data: data
+			data: formData
 		};
 		var headers = new Headers();
 		headers.append('Authorization', request.token);
-		headers.append('Content-Type', 'x-www-form-urlencoded');
 
 		this.http
 			.post(request.url, request.data, { headers: headers })
@@ -135,7 +143,7 @@ export class MnSpeechApiComponent implements OnInit {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 		this.http
-			.post('https://enkhsanaa.me/user/forgotToken', data, { headers: headers })
+			.post(this.SERVER_URL + 'user/forgotToken', data, { headers: headers })
 			.map((data: any) => data.json())
 			.subscribe((data: any) => {
 				this.showLoadingBar = false;
@@ -165,7 +173,7 @@ export class MnSpeechApiComponent implements OnInit {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 		this.http
-			.post('https://enkhsanaa.me/user', data, { headers: headers })
+			.post(this.SERVER_URL + 'user', data, { headers: headers })
 			.map((data: any) => data.json())
 			.subscribe((data: any) => {
 				this.showLoadingBar = false;
@@ -193,7 +201,7 @@ export class MnSpeechApiComponent implements OnInit {
 	};
 	showSnackbar(success: boolean, message: String) {
 		this.snackBar.open((success ? 'Амжилттай! ' : 'Алдаа! ') + message, null, {
-			duration: 20000,
+			duration: 5000,
 			verticalPosition: 'top',
 			extraClasses: [
 				'mt-3',
