@@ -101,6 +101,7 @@ export class MnSpeechApiComponent implements OnInit {
 		this.mediaRecorder.stop();
 	}
 	sendToSTT(token) {
+		this.showLoadingBar = true;
 		const blob = new Blob(this.chunks, { type: 'audio/wav' });
 
 		// var reader = new FileReader();
@@ -130,7 +131,7 @@ export class MnSpeechApiComponent implements OnInit {
 			.subscribe((data: any) => {
 				this.showLoadingBar = false;
 				this.showSnackbar(data.success, data.success ? '' : data.message);
-				if (data.success) this.responseText = data.text;
+				if (data.success) this.responseText = data.message;
 			});
 	}
 	recoverToken(username, password) {
