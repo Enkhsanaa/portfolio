@@ -115,7 +115,7 @@
 					<div class="d-flex align-items-center justify-content-md-start justify-content-center">
 						<button mat-raised-button type="button" class="m-1" (click)="sendToSTT(tokenSTT)">Илгээх</button>
 					</div>
-					<div id="stt_response">{{this.responseText}}</div>
+					<div class="alert alert-success" *ngIf="this.responseText != ''">{{this.responseText}}</div>
 				</div>
 			</mat-tab>
 		</mat-tab-group>

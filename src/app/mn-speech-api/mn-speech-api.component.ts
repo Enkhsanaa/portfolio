@@ -70,7 +70,7 @@ export class MnSpeechApiComponent implements OnInit {
 	startRecording() {
 		const onSuccess = stream => {
 			this.audioStream = stream;
-			this.mediaRecorder = new MediaRecorder(stream);
+			this.mediaRecorder = new MediaRecorder(stream, { audioBitsPerSecond: 16000 });
 			this.mediaRecorder.ondataavailable = e => {
 				this.chunks.push(e.data)
 				const audio = this.microphone.nativeElement;
