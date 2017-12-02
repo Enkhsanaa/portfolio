@@ -11,7 +11,7 @@ import {
 	MatProgressBarModule,
 	MatInputModule
 } from '@angular/material';
-import { HttpModule } from '@angular/http';
+import { Http, HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import 'rxjs/add/operator/map';
 import { MnSpeechApiComponent } from './mn-speech-api/mn-speech-api.component';

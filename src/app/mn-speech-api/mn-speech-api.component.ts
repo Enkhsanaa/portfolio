@@ -43,9 +43,10 @@ export class MnSpeechApiComponent implements OnInit {
 		this.showLoadingBar = true;
 		let request = {
 			url: this.SERVER_URL + 'tts/',
-			token: token.value,
+			token: 'JWT ' + token.value,
 			data: { txt: text.value, voice: voice.value }
 		};
+		if (this.authToken == '') this.storeUserToken(token.value);
 		let headers = new Headers();
 		headers.append('Authorization', request.token);
 		headers.append('Content-Type', 'application/json');
@@ -65,6 +66,16 @@ export class MnSpeechApiComponent implements OnInit {
 						: data.message
 				);
 				if (data.success) this.responseWAV = data.fileName;
+			}, (err) => {
+				this.showLoadingBar = false;
+				if (err.status == 401) {
+					this.showSnackbar(false, 'Таны токен алдаатай байна.');
+					this.clearUserTokenData();
+				}
+				else {
+					let res = JSON.parse(err._body);
+					this.showSnackbar(res.success, res.message);
+				}
 			});
 	}
 	startRecording() {
@@ -101,26 +112,20 @@ export class MnSpeechApiComponent implements OnInit {
 		this.mediaRecorder.stop();
 	}
 	sendToSTT(token) {
+		if (this.isRecording) this.stopRecording();
 		const blob = new Blob(this.chunks, { type: 'audio/wav' });
-
-		// var reader = new FileReader();
-		// var onLoadEnd = (function(e) {
-		// 	reader.removeEventListener('loadend', onLoadEnd, false);
-		// 	if (e.error) console.log(e.error);
-		// 	else this.sendWAV(token, Buffer.from(reader.result));
-		// }).bind(this);
-
-		// reader.addEventListener('loadend', onLoadEnd, false);
-		// reader.readAsArrayBuffer(blob);
+		const audio = this.microphone.nativeElement;
 
 		const formData = new FormData();
 		formData.append('file', blob, "name.wav");
+		formData.append('length', audio.duration);
 
 		let request = {
 			url: this.SERVER_URL + 'stt/',
-			token: token.value,
+			token: 'JWT ' + token.value,
 			data: formData
 		};
+		if (this.authToken == '') this.storeUserToken(token.value);
 		var headers = new Headers();
 		headers.append('Authorization', request.token);
 
@@ -131,6 +136,16 @@ export class MnSpeechApiComponent implements OnInit {
 				this.showLoadingBar = false;
 				this.showSnackbar(data.success, data.success ? '' : data.message);
 				if (data.success) this.responseText = data.text;
+			}, (err) => {
+				this.showLoadingBar = false;
+				if (err.status == 401) {
+					this.showSnackbar(false, 'Таны токен алдаатай байна.');
+					this.clearUserTokenData();
+				}
+				else {
+					let res = JSON.parse(err._body);
+					this.showSnackbar(res.success, res.message);
+				}
 			});
 	}
 	recoverToken(username, password) {
@@ -147,15 +162,22 @@ export class MnSpeechApiComponent implements OnInit {
 			.map((data: any) => data.json())
 			.subscribe((data: any) => {
 				this.showLoadingBar = false;
-				this.showLoadingBar = false;
 				this.showSnackbar(
 					data.success,
-					data.success
-						? 'Та одоо токен оо ашиглан манай API-г ашиглах боломжтой.'
-						: data.message
+					''
 				);
-				if (data.success) this.speechApiStep = 2;
-				this.storeUserData(data.token);
+				this.storeUserToken(data.token);
+				this.speechApiStep = 2;
+			}, (err) => {
+				this.showLoadingBar = false;
+				if (err.status == 401) {
+					this.showSnackbar(false, 'Таны токен алдаатай байна.');
+					this.clearUserTokenData();
+				}
+				else {
+					let res = JSON.parse(err._body);
+					this.showSnackbar(res.success, res.message);
+				}
 			});
 	}
 	getToken(fname, lname, phone, email, username, password, aboutProject) {
@@ -179,12 +201,19 @@ export class MnSpeechApiComponent implements OnInit {
 				this.showLoadingBar = false;
 				this.showSnackbar(
 					data.success,
-					data.success
-						? 'Та одоо токен оо ашиглан манай API-г ашиглах боломжтой.'
-						: data.message
+					data.message
 				);
-				if (data.success) this.speechApiStep = 2;
-				this.storeUserData(data.token);
+
+			}, (err) => {
+				this.showLoadingBar = false;
+				if (err.status == 401) {
+					this.showSnackbar(false, 'Таны токен алдаатай байна.');
+					this.clearUserTokenData();
+				}
+				else {
+					let res = JSON.parse(err._body);
+					this.showSnackbar(res.success, res.message);
+				}
 			});
 	}
 	loadToken() {
@@ -192,9 +221,13 @@ export class MnSpeechApiComponent implements OnInit {
 		this.authToken = token;
 		if (token != '') this.speechApiStep = 2;
 	}
-	storeUserData(token) {
+	storeUserToken(token) {
 		localStorage.setItem('mnSpeechAPIToken', token);
 		this.authToken = token;
+	}
+	clearUserTokenData() {
+		this.authToken = '';
+		localStorage.removeItem('mnSpeechAPIToken');
 	}
 	tabChanged = idx => {
 		if (idx != this.speechApiStep) this.speechApiStep = Number(idx);
