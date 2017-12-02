@@ -113,6 +113,7 @@ export class MnSpeechApiComponent implements OnInit {
 	}
 	sendToSTT(token) {
 		if (this.isRecording) this.stopRecording();
+		this.showLoadingBar = true;
 		const blob = new Blob(this.chunks, { type: 'audio/wav' });
 		const audio = this.microphone.nativeElement;
 
