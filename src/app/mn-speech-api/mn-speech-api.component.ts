@@ -136,7 +136,7 @@ export class MnSpeechApiComponent implements OnInit {
 			.subscribe((data: any) => {
 				this.showLoadingBar = false;
 				this.showSnackbar(data.success, data.success ? '' : data.message);
-				if (data.success) this.responseText = data.text;
+				if (data.success) this.responseText = data.message;
 			}, (err) => {
 				this.showLoadingBar = false;
 				if (err.status == 401) {
